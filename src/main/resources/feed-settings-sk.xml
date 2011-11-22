@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<settings>
+<common>
+<timer-interval>1</timer-interval>
+<ts-interval>-1</ts-interval>
+<ts-maxFeeds>2000</ts-maxFeeds>
+<outputDirectory>/var/lusinda/solr/rss/new/sk</outputDirectory>
+
+</common>
+   
+   
+   
+
+    <feed>
+   <url>http://servis.pravda.sk/rss.asp?r=sk_svet</url>
+   <lang>SLOVAK</lang>
+   </feed>
+     <feed>
+ <url>http://servis.pravda.sk/rss.asp?r=sk_domace</url>
+   <lang>SLOVAK</lang>
+   </feed>
+     <feed>
+ <url>http://servis.pravda.sk/rss.asp?r=sk_ekonomika</url>
+   <lang>SLOVAK</lang>
+   </feed>
+     <feed>
+   <url>http://aktualne.centrum.sk/export/rss-ekonomika.phtml</url>
+   <lang>SLOVAK</lang>
+   </feed>
+     <feed>
+   <url>http://aktualne.centrum.sk/export/rss-domov.phtml</url>
+   <lang>SLOVAK</lang>
+   </feed>
+     <feed>
+   <url>http://aktualne.centrum.sk/export/rss-zahranicie.phtml</url>
+   <lang>SLOVAK</lang>
+   </feed>
+      <feed>
+   <url>http://rss.sme.sk/rss/rss.asp?sek=smeonline&amp;rub=online_zdom</url>
+   <lang>SLOVAK</lang>
+   </feed>
+      <feed>
+   <url>http://rss.sme.sk/rss/rss.asp?sek=smeonline&amp;rub=online_zahr</url>
+   <lang>SLOVAK</lang>
+   </feed>
+      <feed>
+   <url>http://rss.sme.sk/rss/rss.asp?sek=ekon</url>
+   <lang>SLOVAK</lang>
+   </feed>
+   
+  </feedEntries>
+</settings>

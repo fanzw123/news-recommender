@@ -1,0 +1,467 @@
+<?xml version="1.0"?>
+<settings>
+<common>
+<timer-interval>1</timer-interval>
+<ts-interval>-1</ts-interval>
+<ts-maxFeeds>1000</ts-maxFeeds>
+<outputDirectory>/var/lusinda/solr/rss/new/en/</outputDirectory>
+
+</common>
+   
+   
+   <!--  nyTimes -->
+<feedEntries>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/pop_top.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Most E-mailed Articles</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Multimedia.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Multimedia</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/TimesSelect.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; TimesSelect</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/ArtandDesign.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Art and Design</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Arts.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Arts</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Music.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Music</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Television.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Television</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Automobiles.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Automobiles</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Books.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Books</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/SundayBookReview.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Sunday Book Review</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Business.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Business</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/MediaandAdvertising.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Media and Advertising</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/WorldBusiness.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; World Business</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/YourMoney.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Your Money</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/DiningandWine.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Dining and Wine</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Education.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Education</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/FashionandStyle.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Fashion and Style</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/SundayStyles.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Sunday Styles</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/ThursdayStyles.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Thursday Styles</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Weddings.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Weddings</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Health.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Health</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/HealthCarePolicy.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Health Care Policy</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Psychology.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Mental Health &amp; Behavior</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Nutrition.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Nutrition</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/HomeandGarden.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Home and Garden</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/MiddleEast.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Middle East</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/International.xml</url>
+    <lang>ENGLISH</lang>
+    <category>INTERNATIONAL</category>
+    <site>nyt</site>
+    <description>NYT &gt; International</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Europe.xml</url>
+    <lang>ENGLISH</lang>
+    <category>INTERNATIONAL_EUROPE</category>
+    <site>nyt</site>
+    <description>NYT &gt; Europe</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/AsiaPacific.xml</url>
+    <lang>ENGLISH</lang>
+    <category>INTERNATIONAL_ASIA</category>
+    <site>nyt</site>
+    <description>NYT &gt; Asia Pacific</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Americas.xml</url>
+    <lang>ENGLISH</lang>
+    <category>INTERNATIONAL_AMERICA</category>
+    <site>nyt</site>
+    <description>NYT &gt; Americas</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Africa.xml</url>
+    <lang>ENGLISH</lang>
+    <category>INTERNATIONAL_AFRICA</category>
+    <site>nyt</site>
+    <description>NYT &gt; Africa</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Magazine.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Magazine</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/MovieNews.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Movie News</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Movies.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Movie Reviews</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/RedCarpet.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Red Carpet</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/National.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; National</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/MetroCampaigns.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Metro Campaigns</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/NYRegion.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; New York Region</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/TheCity.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; The City</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Home Page</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Obituaries.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Obituaries</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Opinion.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Opinion</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/RealEstate.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Real Estate</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Environment.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Environment</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Science.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Science</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Space.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Space</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Baseball.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Baseball</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/CollegeBasketball.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; College Basketball</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/CollegeFootball.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; College Football</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Golf.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Golf</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Hockey.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Hockey</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/OtherSports.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Other Sports</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/ProBasketball.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Pro Basketball</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/ProFootball.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Pro Football</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Soccer.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Soccer</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Sports.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Sports</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Circuits.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Circuits</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Technology.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Technology</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/PoguesPosts.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>Pogue's Posts - Technology - New York Times Blog</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Theater.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Theater</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Escapes.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Escapes</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Travel.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Travel</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/Washington.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Washington</description>
+  </feed>
+  <feed>
+    <url>http://www.nytimes.com/services/xml/rss/nyt/WeekinReview.xml</url>
+    <lang>ENGLISH</lang>
+    <category>UNKNOWN</category>
+    <site>nyt</site>
+    <description>NYT &gt; Week in Review</description>
+  </feed>
+
+
+<!--  end of nyt feeds -->   
+  
+  </feedEntries>
+</settings>
