@@ -42,6 +42,11 @@ public class TextTranslator extends TranslateStrategy {
 		return translated;
 
 	}
+	
+	public String translateTextBack(String inputText) throws Exception {
+
+	return translate.translateTextBack(inputText);
+	}
 
 	public String translateText(String inputText) throws Exception {
 

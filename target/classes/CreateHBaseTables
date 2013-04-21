@@ -1,0 +1,6 @@
+create 'articles', 'm','a','w','t','s'
+create 'words', 'm','s','a','w','t'
+	create 'topics', 'm','a','w','t'
+
+disable 'articles'
+drop 'articles'

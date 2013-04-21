@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
+
+
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.MasterNotRunningException;
@@ -14,14 +14,17 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.conf.Configuration;
+
 public class HBaseConnection {
 
-	private HBaseConfiguration conf;
+	private Configuration conf;
 	private Map<String, HTable> tables;
 	private HBaseAdmin admin;
 
 	public HBaseConnection(){
-		conf = new   HBaseConfiguration();
+		conf = HBaseConfiguration.create();
+		conf.setBoolean("hbase.defaults.for.version.skip", true);
 	//	admin = new HBaseAdmin(conf);
 	//	conf.addResource(new Path("/Users/teo/DP/hbase/conf/hbase-site.xml"));
 		

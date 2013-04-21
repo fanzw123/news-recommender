@@ -12,6 +12,7 @@ import com.fiit.lusinda.entities.Keyword;
 import com.fiit.lusinda.entities.KeywordFactory;
 import com.fiit.lusinda.entities.Lang;
 import com.fiit.lusinda.entities.RssFeed;
+import com.fiit.lusinda.entities.SemanticsData;
 import com.fiit.lusinda.exceptions.ParserException;
 import com.fiit.lusinda.textprocessing.StandardTextProcessing;
 import com.fiit.lusinda.utils.Logging;
@@ -21,10 +22,12 @@ public class RssParser {
 
 	//KeywordFactory keywordFactory ;
 	Lang lang;
-	private static int minArticleLength = 100;
-	public RssParser(Lang lang)
+	
+	protected static int minArticleLength = 200;
+	public RssParser(Lang lang )
 	{
 		this.lang = lang;
+		
 		//keywordFactory = new KeywordFactory(extractionSource, extractNEOnly);
 
 	}
@@ -35,15 +38,19 @@ public class RssParser {
 		String msg=null;
 		for (Keyword keyword : keywords) {
 			
-		//	msg = keyword.normalizedName+"____"+keyword.escapedName+"_____"+keyword.name;
 			
-			if(body.contains(keyword.escapedName))
+		//	msg = keyword.normalizedName+"____"+keyword.escapedName+"_____"+keyword.name;
+			String normalizedKeyword = keyword.getNormalizedKeyword();
+			
+			
+			
+			if(body.contains(keyword.name))
 			{
-				body = body.replace(keyword.escapedName,keyword.getNormalizedKeyword().concat(" "));
+				body = body.replace(keyword.name,normalizedKeyword.concat(" "));
 			}
 			else
 			{
-				body.concat(keyword.getNormalizedKeyword());
+				body.concat(normalizedKeyword);
 				body.concat(" ");
 		//		msg+="----NOT FOUD---";
 				//TODO problem s encodingom a replace keyword
@@ -57,7 +64,7 @@ public class RssParser {
 		return body;
 	}
 	
-	public  RssFeed parseFeed(SyndEntry entry) throws Exception {
+	public  RssFeed parseFeed(SyndEntry entry,boolean translate) throws Exception {
 	
 		RssFeed parsedFeed = new RssFeed();
 		parsedFeed.link = entry.getLink();
@@ -69,31 +76,38 @@ public class RssParser {
 		
 	
 			
-			body = StandardTextProcessing.getText(entry.getLink());
-			
+			body = StandardTextProcessing.getPlainText(entry.getLink());
+			analyzedBody = body;
 			
 			if(body==null || body.length()==0)
 				throw new ParserException("unable to get text for given URL");
 			if(body.length()<minArticleLength)
 				throw new ParserException("article is not enought length"+body.length()+"/"+minArticleLength);
 			
+			
+			if(lang!=Lang.ENGLISH && translate)
+				analyzedBody = StandardTextProcessing.translate(body);
+			
+			
+		//	analyzedBody = StandardTextProcessing.analyze(body,4);
+
+		//	SemanticsData data= StandardTextProcessing.getSemanticsData(body);
+			
+		//	Logging.Log("---------");
+
+		//	SemanticsData data2= StandardTextProcessing.getSemanticsData(analyzedBody);
+
+			
+//			if (data.keywords != null) {
+//				analyzedBody = processKeywords(data.keywords, body);
+//				analyzedBody = StandardTextProcessing.analyze(analyzedBody,4);
+//			}
+			
 			parsedFeed.originalBody = body;
-			
-			if(lang!=Lang.ENGLISH)
-				body = StandardTextProcessing.translate(body);
-				
-			analyzedBody = StandardTextProcessing.analyze(body,4);
-
-			
-			List<Keyword> keywords = StandardTextProcessing.getKeywords(body);
-			
-			if (keywords != null) {
-				analyzedBody = processKeywords(keywords, analyzedBody);
-			}
-			
 			parsedFeed.preprocessedBody = analyzedBody;
-			parsedFeed.keywords = keywords;
-
+//			parsedFeed.keywords = data.keywords;
+//			parsedFeed.categories = data.categories;
+			
 
 		
 

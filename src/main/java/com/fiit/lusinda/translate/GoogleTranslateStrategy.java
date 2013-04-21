@@ -43,5 +43,11 @@ public class GoogleTranslateStrategy extends TranslateStrategy {
 
 	}
 
+	@Override
+	public String translateTextBack(String inputText) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

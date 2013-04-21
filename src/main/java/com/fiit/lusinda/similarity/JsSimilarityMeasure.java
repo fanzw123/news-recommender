@@ -9,9 +9,12 @@ import ch.usi.inf.sape.hac.experiment.Experiment;
 
 public class JsSimilarityMeasure implements DissimilarityMeasure, SimilarityMeasureStrategy {
 
-	public  double computeSimmilarity(double[] probability1,double[] probability2)
+	public   double computeSimmilarity(double[] probability1,double[] probability2)
 	{
-		return Math.sqrt(cc.mallet.util.Maths.jensenShannonDivergence(probability1, probability2));
+		if(probability1 == null || probability2==null)
+			return 1;
+		else
+			return cc.mallet.util.Maths.jensenShannonDivergence(probability1, probability2);
 	}
 	
 	public double computeDissimilarity(Experiment experiment, int observation1, int observation2) {

@@ -50,9 +50,9 @@ public class Utils {
 		String[] words = (String[]) lda.getAlphabet().toArray(new String[0]);
 		TopicWordMatrix topicWordMatrix = new TopicWordMatrix(words, lda.getNumTopics());
 		
-		TreeSet[] topicSortedWords = lda.getSortedWords();
+		ArrayList<TreeSet<IDSorter>> topicSortedWords = lda.getSortedWords();
 		for (int ti = 0; ti < lda.getNumTopics(); ti++) {
-			Iterator<IDSorter> iterator = topicSortedWords[ti].iterator();
+			Iterator<IDSorter> iterator = topicSortedWords.get(ti).iterator();
 			while (iterator.hasNext() ) {
 				IDSorter info = iterator.next();
 				topicWordMatrix.addWordProbability(ti, (String)lda.getAlphabet().lookupObject(info.getID()), info.getWeight()/lda.geTtokensPerTopic()[ti]);
@@ -148,6 +148,8 @@ public class Utils {
 		sme.disconnect();
 
 	}
+	
+	
 
 	public static Dataset exportDocumentTopics(String filePath,
 			Lda lda, List<DocumentProbability> docs,

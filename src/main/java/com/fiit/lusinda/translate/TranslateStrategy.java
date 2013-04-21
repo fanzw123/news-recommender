@@ -16,6 +16,8 @@ public abstract class TranslateStrategy {
 																			// SK
 																			// -
 																			// EN
+	
+	public abstract String translateTextBack(String inputText) throws Exception;
 
 	public static List<String> getChunks(final String text, final int chunkSize) {
 		int textLength = text.length();

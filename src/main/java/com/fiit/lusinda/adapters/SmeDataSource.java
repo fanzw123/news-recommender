@@ -1,6 +1,13 @@
 package com.fiit.lusinda.adapters;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -13,19 +20,168 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.jdom.IllegalDataException;
+import org.jsoup.Jsoup;
+
+import com.fiit.lusinda.entities.Article;
 import com.fiit.lusinda.translate.TranslateStrategy;
 import com.fiit.lusinda.utils.Logging;
+import com.google.common.collect.Lists;
+import com.sun.syndication.feed.synd.SyndContent;
+import com.sun.syndication.feed.synd.SyndContentImpl;
+import com.sun.syndication.feed.synd.SyndEntry;
+import com.sun.syndication.feed.synd.SyndEntryImpl;
+import com.sun.syndication.feed.synd.SyndFeed;
+import com.sun.syndication.feed.synd.SyndFeedImpl;
+import com.sun.syndication.io.FeedException;
+import com.sun.syndication.io.SyndFeedInput;
+import com.sun.syndication.io.SyndFeedOutput;
+import com.sun.syndication.io.XmlReader;
 
 public class SmeDataSource {
 
 	public static Connection conn;
+	
+	private String selectStm;
+
 
 	public SmeDataSource() {
 
 	}
 
+	public void setSelectCmd(String select)
+	{
+		this.selectStm = select;
+	}
+	
+	public List<Article> getArticles(int count) throws SQLException
+	{
+		List<Article> articles = Lists.newArrayList();
+		PreparedStatement stm = conn
+				.prepareStatement("SELECT title,body FROM articles LIMIT ?");
+		stm.setInt(1, count);
+		
+		ResultSet result = stm.executeQuery();
+		
+
+
+		while (result.next()) {
+			Article a =new Article();
+			
+			a.title = result.getString("title");
+			a.content = result.getString("body");
+			articles.add(a);
+
+		}
+		
+		return articles;
+	}
+	
+	private SyndFeed buildRssFeed(String feedName,Date publishedDate) throws SQLException, IllegalArgumentException, FeedException, IOException
+	{
+SyndFeedInput input = new SyndFeedInput();
+		
+		SyndFeed feed = new SyndFeedImpl();//input.build( new XmlReader( file) );
+		Date publishDate = publishedDate ;
+		feed.setTitle(feedName);
+		feed.setLink("dd");
+		feed.setDescription("Dddd");
+		//feed.setDescription( "RSS feeds of blog entries from Techblog.ph" );
+		//feed.setLanguage( "en-us" );
+		feed.setPublishedDate( publishDate );
+		feed.setFeedType( "rss_2.0" ); 
+		
+		return feed;
+		
+	}
+	
+	private SyndEntry buildRssEntry(SyndFeed feed,ResultSet result) throws SQLException
+	{
+		SyndEntry entry = new SyndEntryImpl(); 
+		entry.setTitle(  result.getString("title") );
+		entry.setLink(  result.getString("url"));
+		entry.setPublishedDate( result.getDate("published_at") );
+		SyndContent content = new SyndContentImpl();
+		content.setType( "text/plain" );
+		String cleaned = Jsoup.parse(result.getString("body")).text();
+		//String escaped = StringEscapeUtils.escapeXml(cleaned);
+		
+		content.setValue(cleaned);
+		
+				entry.setDescription( content );
+		
+		return entry;
+	}
+
+	public void saveSqlAsRss(String outputDir,int maxArticles) throws SQLException, IOException, IllegalArgumentException, FeedException {
+		
+				
+		PreparedStatement statement = conn.prepareStatement(selectStm);//+String.valueOf(numberOfArticles));
+
+		ResultSet result = statement.executeQuery();
+		int ts = 1;
+		int i=0;
+		
+
+		SyndFeed feed =null;
+		List<SyndEntry> entries = new ArrayList<SyndEntry>();
+		
+		while (result.next()) {
+			if(i>maxArticles || ts==1)
+			{
+				
+				if(entries!=null && entries.size()>0)
+				{
+					feed.setEntries( entries );
+					
+					writeFeed(new File(outputDir+"/"+ts+".xml"), feed);
+				}
+				
+				i=0;
+				ts++;
+				entries = new ArrayList<SyndEntry>();
+				feed = buildRssFeed( String.valueOf(ts), result.getDate("published_at"));
+
+				Logging.Log("fetch ts"+ts);
+			}
+			
+			SyndEntry entry = buildRssEntry(feed, result);
+			
+			entries.add( entry );
+			i++;
+			
+		}
+		
+	
+	}
+	
+	private void writeFeed(File f,SyndFeed feed) throws IOException, FeedException
+	{
+		OutputStream out = new FileOutputStream(f);
+		
+	
+		
+		
+		  Writer writer = new OutputStreamWriter(out, Charset.forName("UTF-8"));
+		  SyndFeedOutput output = new SyndFeedOutput();
+		  try
+		  {
+		         output.output(feed,writer);
+		  }
+		  catch(IllegalDataException e)
+			{
+				Logging.Log("skiped");
+				if(writer!=null)
+					writer.close();
+			}
+		         writer.close();
+		 
+	    
+	}
+	
 	public void connect() {
-		connect("root", "root", "jdbc:mysql://localhost/sme.sk");
+		connect("root","root", "jdbc:mysql://localhost/sme_sk");
 
 	}
 
@@ -60,6 +216,15 @@ public class SmeDataSource {
 			// TODO Auto-generated catch block
 			Logging.Log(e.getMessage());
 		}
+	}
+	
+	public void truncate(String tableName) throws SQLException
+	{
+		PreparedStatement statement = conn.prepareStatement("truncate "+tableName);
+		
+		statement.execute();
+		
+		
 	}
 
 	public int getCount(String stm) throws SQLException, IOException {
@@ -157,6 +322,19 @@ public class SmeDataSource {
 			TranslateStrategy translator) throws SQLException {
 
 		this.translateArticles(columns, where, -1, translator);
+	}
+	
+	public void insertToEvaluatedArticles(int article_id) throws SQLException
+	{
+		String insertStm = new String(
+				"INSERT INTO evaluated_articles(article_id) VALUES(?)");
+		
+		PreparedStatement insertStatement = conn.prepareStatement(insertStm
+				.toString());
+		
+		insertStatement.setInt(1, article_id);
+		
+		insertStatement.execute();
 	}
 
 	public void translateArticles(String[] columns, String where, int limit,

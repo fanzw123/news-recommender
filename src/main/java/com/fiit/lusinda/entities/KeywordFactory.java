@@ -25,7 +25,7 @@ public class KeywordFactory {
 			NeKeyword neKeyword = new NeKeyword();
 			neKeyword.nameEntityType = type;
 			neKeyword.name = name;
-			neKeyword.escapedName = StandardTextProcessing.analyze(name,0);
+			neKeyword.escapedName = null;// StandardTextProcessing.analyze(name,0);
 			neKeyword.normalizedName = StandardTextProcessing.normalizeKeyword(name);
 
 			return neKeyword;
@@ -35,7 +35,7 @@ public class KeywordFactory {
 			Keyword keyword = new Keyword();
 		
 			keyword.name = name;
-			keyword.escapedName = StandardTextProcessing.analyze(name,0);
+			keyword.escapedName = null;// StandardTextProcessing.analyze(name,0);
 			keyword.normalizedName = StandardTextProcessing.normalizeKeyword(name);
 
 			return keyword;

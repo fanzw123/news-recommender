@@ -3,16 +3,18 @@ package com.fiit.lusinda.entities;
 public class TsObject {
 	
 	public int maxFeeds;
-	int currFeeds = 0;
+	int currFeeds = 1;
 	long currTs;
 	public long ts_interval;
 
 	TsChangeListener listener;
+	TickStrategy strategy;
 	
-	public TsObject(TsChangeListener listener)
+	public TsObject(TsChangeListener listener,TickStrategy strategy)
 	{
 		this.listener = listener;
-		this.currTs = new java.util.Date().getTime();
+		this.strategy =strategy;
+		this.currTs =strategy.getTick(currTs);
 	}
 	
 	public void start()
@@ -33,6 +35,8 @@ public class TsObject {
 	
 	public void increment()
 	{
+		listener.onTick();
+		
 		refreshTs();
 		if(currFeeds == 0)
 			listener.onChange();
@@ -46,7 +50,8 @@ public class TsObject {
 	
 	private boolean refreshTs() {
 		if (currFeeds >= maxFeeds) {
-			currTs = new java.util.Date().getTime();
+		//	currTs= new java.util.Date().getTime();
+			this.currTs =strategy.getTick(currTs);
 			currFeeds = 0;
 			return true;
 		} else

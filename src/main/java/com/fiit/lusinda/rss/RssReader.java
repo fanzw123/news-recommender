@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,14 +23,27 @@ import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.jruby.ast.EnsureNode;
 
+import cc.mallet.types.InstanceList;
+
+import com.fiit.lusinda.clustering.Dataset;
+import com.fiit.lusinda.clustering.Hac;
+import com.fiit.lusinda.entities.DateTimeTickStrategy;
+import com.fiit.lusinda.entities.FeedInfo;
+import com.fiit.lusinda.entities.FeedState;
 import com.fiit.lusinda.entities.Lang;
+import com.fiit.lusinda.entities.NumberTickStrategy;
 import com.fiit.lusinda.entities.RssFeed;
+import com.fiit.lusinda.entities.StreamTopicModel;
+import com.fiit.lusinda.entities.StreamTopicModelInfo;
+import com.fiit.lusinda.entities.TickStrategy;
 import com.fiit.lusinda.entities.TsChangeListener;
 import com.fiit.lusinda.entities.TsObject;
 import com.fiit.lusinda.exceptions.ParserException;
-import com.fiit.lusinda.hbase.HBaseImport;
+import com.fiit.lusinda.hbase.HBaseProxyManager;
+
+import com.fiit.lusinda.topicmodelling.LdaProperties;
+import com.fiit.lusinda.topicmodelling.LdaModel;
 import com.fiit.lusinda.utils.ContentWriter;
 import com.fiit.lusinda.utils.CsvWriter;
 import com.fiit.lusinda.utils.Logging;
@@ -39,6 +53,8 @@ import com.sun.syndication.fetcher.FeedFetcher;
 import com.sun.syndication.fetcher.FetcherException;
 import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
 import com.sun.syndication.io.FeedException;
+import com.sun.syndication.io.SyndFeedInput;
+import com.sun.syndication.io.XmlReader;
 
 public class RssReader {
 
@@ -61,7 +77,7 @@ public class RssReader {
 
 	}
 
-	public void start() {
+	public void start() throws Exception {
 
 		RssFetcherTimerTask task = null;
 		try {
@@ -90,25 +106,30 @@ public class RssReader {
 	}
 
 	public static void main(String[] args) {
-		boolean ok = false;
-		String url_sme = "http://rss.sme.sk/rss/rss.asp?sek=smeonline";
-		String url_pravda_sport = "http://servis.pravda.sk/rss.asp?o=sk_sport";
-		String url_nyt = "http://feeds.nytimes.com/nyt/rss/Europe";
-		int maxFeeds = 10;
-		long interval = -1;
+//		boolean ok = false;
+//		String url_sme = "http://rss.sme.sk/rss/rss.asp?sek=smeonline";
+//		String url_pravda_sport = "http://servis.pravda.sk/rss.asp?o=sk_sport";
+//		String url_nyt = "http://feeds.nytimes.com/nyt/rss/Europe";
+//		int maxFeeds = 10;
+//		long interval = -1;
 		try {
 
 			InputStream settingsIn = null;
-			boolean nyt = true;
-
+			FeedSettings settings =null;
 			if (args.length>0 && args[0] != null)
+			{
 				settingsIn = new FileInputStream(args[0]);
-			else
-				settingsIn = RssReader.class
-						.getResourceAsStream("/feed-settings-en.xml");
+				settings = FeedSettings.read(settingsIn);
+			}
+//			else
+//				settingsIn = RssReader.class
+//						.getResourceAsStream("/feed-settings-default.xml");
 
-			FeedSettings settings = FeedSettings.read(settingsIn);
-
+			
+			if(settings==null)
+				settings = FeedSettings.getSmeExperimentFeedSettings(7);
+			
+			
 			RssReader reader = new RssReader(settings);
 			reader.start();
 
@@ -121,27 +142,35 @@ public class RssReader {
 
 }
 
-enum FeedState {
-	NEW, PROCESSED, SKIPED, DELETED
-}
+
 
 class RssFetcherTimerTask extends TimerTask implements TsChangeListener {
 
 	FeedFetcher fetcher;
-	Map<String, FeedState> feedCache;
+	Map<String, FeedInfo> feedCache;
 	// RssParser rssParser;
 	TsObject tsObject;
 	String outputDirectory;
 	String seqDirectory;
 	String contentDirectory;
+	String ldaDirectory;
 	String localFeedCachePath;
 	FeedSettings feedSettings;
-	HBaseImport himport;
+	
 
 	// CsvWriter csvWriter;
 	ContentWriter contentWriter;
+	
+	ContentWriter originalContentWriter;
+	
+	//lda
 
-	public RssFetcherTimerTask(FeedSettings settings) throws IOException {
+	StreamTopicModel topicModel;
+
+
+
+
+	public RssFetcherTimerTask(FeedSettings settings) throws Exception {
 
 		this.feedSettings = settings;
 		// feedUrl = new URL(settings.feedEntries.get(0).url);
@@ -153,19 +182,35 @@ class RssFetcherTimerTask extends TimerTask implements TsChangeListener {
 		this.seqDirectory = outputDirectory + "seq/";
 		this.contentDirectory = outputDirectory + "content/";
 		this.localFeedCachePath = outputDirectory + "feedCache";
-
-		this.tsObject = new TsObject(this);
+		this.ldaDirectory = outputDirectory + "lda/";
+	
+//		StreamTopicModelInfo info = new StreamTopicModelInfo(feedSettings,ldaDirectory,
+//				settings.window_length,30,1000,15);
+				
+		topicModel = new StreamTopicModel(ldaDirectory,feedSettings);
+	
+	//	TickStrategy strategy = settings.localStore?new NumberTickStrategy():new DateTimeTickStrategy();
+		
+		TickStrategy strategy =  new DateTimeTickStrategy();
+				
+		this.tsObject = new TsObject(this,strategy);
 		tsObject.maxFeeds = settings.ts_maxFeeds;
 		tsObject.ts_interval = settings.ts_interval;
 		tsObject.start();
 		
+		topicModel.createStream(tsObject.getCurrTs());
+	//	if(settings.localStore)
+			topicModel.loadLdaModels();
+		
 		feedCache = deserializeFeedCache();
 
-		himport = new HBaseImport();
+	
 
-		ensureExistsDirs();
+		//ensureExistsDirs();
 
 	}
+	
+	
 
 	private void ensureExistsDirs() {
 		File f = new File(seqDirectory);
@@ -201,19 +246,21 @@ class RssFetcherTimerTask extends TimerTask implements TsChangeListener {
 
 		for (String cachedLink : feedCache.keySet()) {
 
-			FeedState state = feedCache.get(cachedLink);
+			FeedInfo info = feedCache.get(cachedLink);
 
-			if (state.equals(FeedState.PROCESSED))
-				writer.writeLine(cachedLink);
+			if (info.state.equals(FeedState.PROCESSED))
+				writer.writeLine(cachedLink,Long.toString(info.ts));
 		}
 		
 		writer.finish();
 
 	}
+	
+	
 
-	private Map<String, FeedState> deserializeFeedCache() {
+	private Map<String, FeedInfo> deserializeFeedCache() {
 
-		Map<String, FeedState> cache = new HashMap<String, FeedState>();
+		Map<String, FeedInfo> cache = new HashMap<String, FeedInfo>();
 
 		try {
 			File f = new File(localFeedCachePath);
@@ -226,13 +273,27 @@ class RssFetcherTimerTask extends TimerTask implements TsChangeListener {
 			StringTokenizer st = null;
 
 			String separator = ";";
-
+			FeedInfo info = null;
+			String link=null;
 			// read comma separated file line by line
 			while ((strLine = br.readLine()) != null) {
 
+				try
+				{
 				st = new StringTokenizer(strLine, separator);
 
-				cache.put(st.nextToken(), FeedState.PROCESSED);
+				link = st.nextToken();
+				
+				info = new FeedInfo();
+				info.state = FeedState.PROCESSED;
+				info.ts = Long.parseLong(st.nextToken());
+				cache.put(link, info);
+				}
+				catch(Exception ex)
+				{
+					Logging.Log("feed could not be deserialized");
+
+				}
 
 			}
 		} catch (IOException e) {
@@ -244,12 +305,14 @@ class RssFetcherTimerTask extends TimerTask implements TsChangeListener {
 
 	private void fetchFeeds() {
 
+		
 		SyndFeed feed;
 		RssFeed parsedFeed;
 		URL feedUrl;
 		RssParser rssParser;
 		int currFeedSource = 0;
-
+		FeedInfo feedInfo=null;
+		
 		java.util.Date now = new java.util.Date();
 		Logging.Log("Processing starts at: " + now.toString());
 
@@ -262,8 +325,19 @@ class RssFetcherTimerTask extends TimerTask implements TsChangeListener {
 				currFeedSource++;
 
 				feedUrl = new URL(feedEntry.url);
-				rssParser = new RssParser(feedEntry.lang);
-				feed = fetcher.retrieveFeed(feedUrl);
+				if("http".equals(feedUrl.getProtocol()))
+				{
+						feed = fetcher.retrieveFeed(feedUrl);
+						rssParser = new RssParser(feedEntry.lang);
+
+				}
+				else
+				{
+					SyndFeedInput input = new SyndFeedInput();
+					rssParser = new RssFileParser(feedEntry.lang);
+					String path = feedUrl.getAuthority()+feedUrl.getFile();
+					feed = input.build(new XmlReader(new File(path)));
+				}
 
 				Logging.Log("Processing feed source (" + currFeedSource + "\\"
 						+ feedSettings.feedEntries.size() + ") "
@@ -299,7 +373,11 @@ class RssFetcherTimerTask extends TimerTask implements TsChangeListener {
 				// do kese pridame vsetky nove linky + ich spracujeme
 				for (String link : links) {
 					if (feedCache.get(link) == null) {
-						feedCache.put(link, FeedState.NEW);
+						feedInfo = new FeedInfo();
+						feedInfo.state = FeedState.NEW;
+						feedInfo.ts = tsObject.getCurrTs();
+						
+						feedCache.put(link, feedInfo);
 						Logging.Log("NEW: " + link);
 
 					}
@@ -315,32 +393,44 @@ class RssFetcherTimerTask extends TimerTask implements TsChangeListener {
 
 					try {
 						String link = entry.getLink();
-						if (FeedState.NEW.equals(feedCache.get(link))) {
+						FeedInfo currInfo =  feedCache.get(link);
+						if (FeedState.NEW.equals(currInfo.state)) {
 
 
-							parsedFeed = rssParser.parseFeed(entry); 
+							parsedFeed = rssParser.parseFeed(entry,feedEntry.translate); 
 							
-								parsedFeed.ts = tsObject.getCurrTs();
+								parsedFeed.ts =currInfo.ts;
 								parsedFeed.lang = feedEntry.lang;
-								parsedFeed.category = feedEntry.category;
+							//	parsedFeed.category = feedEntry.category;
 								parsedFeed.site = feedEntry.site;
-
+							parsedFeed.articleId = parsedFeed.getArticleId();
 								
-								 himport.importRssFeed(parsedFeed);
+								if(feedSettings.hbaseImport)
+									HBaseProxyManager.getProxy().importRssFeed(parsedFeed);
+								 
+								topicModel.addDocToStream(parsedFeed.getKey(),parsedFeed.preprocessedBody,parsedFeed.getNormalizedTitle());
+								
+							
 
 								// saveFeed(csvWriter, parsedFeed);
 
-								contentWriter
-										.WriteContent(String.valueOf(tsObject
-												.getCurrFeeds()),
-												parsedFeed.preprocessedBody);
 
-								feedCache.put(link, FeedState.PROCESSED);
+//								seqFileWriter.write(parsedFeed.getNormalizedTitle(), parsedFeed.preprocessedBody);
+//								contentWriter
+//										.WriteContent(parsedFeed.getNormalizedTitle(),  //String.valueOf(tsObject.getCurrFeeds()),
+//												parsedFeed.preprocessedBody);
+//
+//								originalContentWriter.WriteContent(String.valueOf(tsObject.getCurrFeeds()),
+//										parsedFeed.originalBody);
+//
+//								
+								currInfo.state =  FeedState.PROCESSED;
+								feedCache.put(link,currInfo);
 								tsObject.increment();
 
 
 								Logging.Log("PROCESSED: "
-										+ tsObject.getCurrTs() + "/"
+										+ currInfo.ts + "/"
 										+ tsObject.getCurrFeeds() + ", " + link);
 							
 						}
@@ -349,7 +439,7 @@ class RssFetcherTimerTask extends TimerTask implements TsChangeListener {
 					catch(ParserException e)
 					{
 						Logging.Log("ERROR:" +e.getMessage());
-						feedCache.put(entry.getLink(), FeedState.SKIPED);
+						
 
 						
 					}
@@ -358,13 +448,17 @@ class RssFetcherTimerTask extends TimerTask implements TsChangeListener {
 								+ "/" + tsObject.getCurrFeeds() + ", "
 								+ entry.getLink());
 						e.printStackTrace();
-						feedCache.put(entry.getLink(), FeedState.SKIPED);
+						FeedInfo info = new FeedInfo();
+						info.state = FeedState.SKIPED;
+						feedCache.put(entry.getLink(), info);
 						
 					}
 				}
 
 				// uz by mali byt vsetky feed bud delete alebo processed
-				if (tsObject.getCurrFeeds() > 0)
+				
+				//vypnutie kese
+				//if (tsObject.getCurrFeeds() > 0)
 					serializeFeedCache();
 
 			} catch (Exception e) {
@@ -375,30 +469,66 @@ class RssFetcherTimerTask extends TimerTask implements TsChangeListener {
 
 	}
 
-	private void saveFeed(CsvWriter csvWriter, RssFeed feed) throws IOException {
-		csvWriter.writeLine(feed.link, feed.title, String.valueOf(feed.ts));
+//	private void saveFeed(CsvWriter csvWriter, RssFeed feed) throws IOException {
+//		csvWriter.writeLine(feed.link, feed.title, String.valueOf(feed.ts));
+//
+//	}
 
+	public void onTick() {
+	
+	
+		//business logic in main loop
 	}
-
+	
 	public void onChange() {
 
+	//	topicModel.getCurrentStream().processStreamData();
+		
+		try {
+			topicModel.processStreamData();
+		} catch (Exception e) {
+			Logging.Log("error processing stream data.");
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+
+		
+		
+		topicModel.createStream(tsObject.getCurrTs());
+		
 		// if (csvWriter != null)
 		// csvWriter.finish();
 		// csvWriter = CsvWriter
 		// .create(seqDirectory + currTs, ";", "UTF8");
 
-		contentWriter = ContentWriter.create(
-				contentDirectory + tsObject.getCurrTs(), "UTF8");
+		//seqFileWriter.finish();
+		//seqFileWriter = SequenceFileWriter.create(contentDirectory+tsObject.getCurrTs()+"-seq");
+
+		
+//		contentWriter = ContentWriter.create(
+//				contentDirectory + tsObject.getCurrTs(), "UTF8");
+//		
+//		originalContentWriter = ContentWriter.create(
+//				contentDirectory + tsObject.getCurrTs()+"-original", "UTF8");
+//		
+		
+					
 	}
 
 	 
-	public void onStart() {
-		contentWriter = ContentWriter.create(
-				contentDirectory + tsObject.getCurrTs(), "UTF8");
+	public void onStart()  {
+//		contentWriter = ContentWriter.create(
+//				contentDirectory + tsObject.getCurrTs()+"-new", "UTF8");
+//		
+//		originalContentWriter = ContentWriter.create(
+//				contentDirectory + tsObject.getCurrTs()+"-original", "UTF8");
+//		
+//		seqFileWriter = SequenceFileWriter.create(contentDirectory+tsObject.getCurrTs()+"-seq");
 	}
 
 	public void onEnd() {
 
 	}
 
+	
 }

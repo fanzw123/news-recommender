@@ -16,6 +16,8 @@ import org.json.JSONObject;
 
 import com.fiit.lusinda.entities.Keyword;
 import com.fiit.lusinda.entities.KeywordFactory;
+import com.fiit.lusinda.entities.SemanticsData;
+import com.fiit.lusinda.entities.TopicCategory;
 import com.fiit.lusinda.services.MetallClient.MetallClientException;
 import com.fiit.lusinda.utils.Logging;
 
@@ -27,11 +29,10 @@ public class OpenCalaisClient {
 
 	private static String APIKEY = "zsrquwtanfyrabvvkxk6kmen";
 	private static int timeout = 20000;
-	private static int maxAttempts = 10;
+	private static int maxAttempts = 2;
 
-	public List<Keyword> getKeywords(String content,
-			KeywordFactory keywordFactory) throws IOException,
-			InterruptedException {
+	public SemanticsData getResult(String content, KeywordFactory keywordFactory)
+			throws IOException, InterruptedException {
 
 		CalaisClient calais = new CalaisRestClient(OpenCalaisClient.APIKEY);
 		CalaisResponse response = null;
@@ -48,26 +49,45 @@ public class OpenCalaisClient {
 			}
 
 		if (response != null)
-			return processKeywords(response, keywordFactory);
+			return processResponse(response, keywordFactory);
 		else
 			return null;
 	}
 
-	private List<Keyword> processKeywords(CalaisResponse response,
+	private SemanticsData processResponse(CalaisResponse response,
 			KeywordFactory keywordFactory) throws IOException {
-		List<Keyword> keywordArray = new ArrayList<Keyword>();
+		SemanticsData data = new SemanticsData();
+		
+
+//		for (CalaisObject topic : response.getTopics()) {
+//			TopicCategory category = new TopicCategory();
+//			category.name = topic.getField("categoryName");
+//			category.weight = Double.parseDouble(topic.getField("score"));
+//			
+//			data.categories.add(category);
+//			
+//		}
+		
+		//Logging.Log(response.getPayload());
 
 		for (CalaisObject entity : response.getEntities()) {
+			
+			if(!"person".equals(entity.getField("_type").toLowerCase()))
+				continue;
+			
 			Keyword keyword = keywordFactory.getKeyword(
 					entity.getField("name"), entity.getField("_type"));
-			if (keyword != null)
-			{
-				keyword.score = Double.parseDouble(entity.getField("relevance"));
-				keywordArray.add(keyword);
+			if (keyword != null) {
+				keyword.score = Double
+						.parseDouble(entity.getField("relevance"));
+				
+			//	Logging.Log(keyword.name+ " : "+entity.getField("_type"));
+				
+				data.keywords.add(keyword);
 			}
 		}
 
-		return keywordArray;
+		return data;
 
 	}
 

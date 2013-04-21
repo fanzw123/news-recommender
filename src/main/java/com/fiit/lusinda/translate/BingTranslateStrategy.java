@@ -45,5 +45,9 @@ public class BingTranslateStrategy extends TranslateStrategy {
 		return Translate.execute(inputText,com.memetix.mst.language.Language.SLOVAK,com.memetix.mst.language.Language.ENGLISH);
 	}
 
+	@Override
+	public String translateTextBack(String inputText) throws Exception {
+		return Translate.execute(inputText,com.memetix.mst.language.Language.ENGLISH,com.memetix.mst.language.Language.SLOVAK);
+	}
 	
 }

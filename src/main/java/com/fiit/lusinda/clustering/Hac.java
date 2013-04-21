@@ -2,6 +2,9 @@ package com.fiit.lusinda.clustering;
 
 import java.io.IOException;
 
+import javax.naming.OperationNotSupportedException;
+
+import com.fiit.lusinda.similarity.JackardSimilarity;
 import com.fiit.lusinda.similarity.JsSimilarityMeasure;
 
 import ch.usi.inf.sape.hac.HierarchicalAgglomerativeClusterer;
@@ -21,19 +24,35 @@ Dataset documents = new Dataset();
 documents.loadDataset(";", "/var/lusinda/solr/mallet/9/topics-in-documents.csv");
 		
 		Hac hac = new Hac();
-		hac.runHac(documents);
+	//	hac.runHac(documents);
 	
 	}
 	
-	public void runHac(Dataset dataset)
+	public void runHac(ResultsDocuments experiment,DissimilarityMeasure measure,AgglomerationMethod method)
 	{
+		
+		DissimilarityMeasure dissimilarityMeasure = measure;
+		AgglomerationMethod agglomerationMethod = method;
+		MyDendogramBuilder dendrogramBuilder = new MyDendogramBuilder(experiment.getNumberOfObservations(),experiment);
+		HierarchicalAgglomerativeClusterer clusterer = new HierarchicalAgglomerativeClusterer(experiment, dissimilarityMeasure, agglomerationMethod);
+		
+		clusterer.cluster(dendrogramBuilder);
+		MyDendogram dendrogram = dendrogramBuilder.getDendrogram();	
+		
+		dendrogram.dump();
+	}
+	
+	public void runHac(ResultsDocuments dataset) throws OperationNotSupportedException
+	{
+		
+		
 		Experiment experiment = dataset;
 		DissimilarityMeasure dissimilarityMeasure = new JsSimilarityMeasure();
 		AgglomerationMethod agglomerationMethod = new CompleteLinkage();
-		MyDendogramBuilder dendrogramBuilder = new MyDendogramBuilder(experiment.getNumberOfObservations(),dataset);
+		DendrogramBuilder dendrogramBuilder = new DendrogramBuilder(experiment.getNumberOfObservations());
 		HierarchicalAgglomerativeClusterer clusterer = new HierarchicalAgglomerativeClusterer(experiment, dissimilarityMeasure, agglomerationMethod);
 		clusterer.cluster(dendrogramBuilder);
-		MyDendogram dendrogram = dendrogramBuilder.getDendrogram();	
+		Dendrogram dendrogram = dendrogramBuilder.getDendrogram();	
 		
 		dendrogram.dump();
 	}

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<settings>
+	<common>
+		<timer-interval>1</timer-interval>
+		<ts-interval>-1</ts-interval>
+		<ts-maxFeeds>500</ts-maxFeeds>
+		<outputDirectory>//home/molnar/output/</outputDirectory>
+		<feedEntries-location>/home/molnar/sme_rss/all</feedEntries-location>
+		<feedEntries-max>5</feedEntries-max>
+		<maxRecommendations>10</maxRecommendations>
+	<queryLimit>5</queryLimit>
+	<maxWordsPerTopic>1000</maxWordsPerTopic>;
+	<topics>70</topics>
+	<hbaseImport>true</hbaseImport>
+	<averageNumRuns>1</averageNumRuns>
+	<evaluate>false</evaluate> 
+	<estimateTopicCountsUsingHLDA>true</estimateTopicCountsUsingHLDA>  
+	<onlyUpperKeywords>false</onlyUpperKeywords>
+	<experimental>false</experimental>
+	<summarize>true</summarize>
+	<summarizedSentencesLimit>4</summarizedSentencesLimit>
+	
+	
+	</common>
+
+
+	<feedEntries>
+
+		<feed>
+			<url>file:///molnar/sme_rss/zahranicie/2.xml</url>
+			<lang>SLOVAK</lang>
+			<translate>false</translate>
+			<category>UNKNOWN</category>
+			<translate>false</translate>
+			<site>sme</site>
+			<description></description>
+		</feed>
+			
+	</feedEntries>
+</settings>

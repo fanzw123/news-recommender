@@ -4,13 +4,15 @@
 <timer-interval>1</timer-interval>
 <ts-interval>-1</ts-interval>
 <ts-maxFeeds>1000</ts-maxFeeds>
-<outputDirectory>/var/lusinda/solr/rss/new/en/</outputDirectory>
+<outputDirectory>/master/mapreduce/seq/</outputDirectory>
 
 </common>
    
    
+   
    <!--  nyTimes -->
 <feedEntries>
+
   <feed>
     <url>http://www.nytimes.com/services/xml/rss/nyt/pop_top.xml</url>
     <lang>ENGLISH</lang>
@@ -460,7 +462,7 @@
     <description>NYT &gt; Week in Review</description>
   </feed>
 
-
+ 
 <!--  end of nyt feeds -->   
   
   </feedEntries>
