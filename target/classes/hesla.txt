@@ -1,7 +1,0 @@
-mysql molnar, hesielko
-ssh molnar, xmolnarm2
-
-CREATE DATABASE sme_sk;
-CREATE USER 'molnar'@'localhost' IDENTIFIED BY 'hesielko';
-GRANT ALL PRIVILEGES ON sme_sk.* TO 'molnar'@'localhost';
-
